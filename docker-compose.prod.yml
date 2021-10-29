@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  web: 
+    image: ${DOCKERHUB_USER}/dockerkvs_web:${BUILD_TIMESTAMP}
+    container_name: dockerkvs_web
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    environment:
+      APP_SERVER: http://app:80
+  app:
+    image: ${DOCKERHUB_USER}/dockerkvs_app:${BUILD_TIMESTAMP}
+    container_name: dockerkvs_app
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      REDIS_HOST: db
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+  db:
+    image: redis:5.0.6-alpine3.10
+    container_name: dockerkvs_db
+    restart: unless-stopped
+    volumes:
+      - dockerkvs_redis_volume:/data
+volumes:
+  dockerkvs_redis_volume:
+    driver: local 

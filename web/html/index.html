@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>DockerKVS Service</title>
+    <link  href="/static/favicon.png" rel="icon" type="image/png">
+    <link  href="/static/css/bootstrap-4.3.1.min.css" rel="stylesheet" >
+    <script src="/static/js/jquery-2.2.4.min.js"></script>
+    <script src="/static/js/bootstrap-4.3.1.bundle.min.js"></script>
+    <script src="/static/js/bootstrap-4.3.1.min.js"></script>
+    <script src="/static/js/kvs.js"></script>
+  </head>
+
+  <body class="container">
+    <h1 class="h3" style="padding-top:10px">
+      <a href="/">Hello Service</a>
+    </h1>
+
+    <h2 class="h4" style="padding-top:20px">Call API</h2>
+    <div class="row">
+      <div class="form-group col">
+        <label for="key">Key(alnum)</label>
+        <input id="key" class="form-control" type="text" 
+          pattern="^([a-zA-Z0-9]{0,})$">
+      </div>
+      <div class="form-group col">
+        <label for="value">Value(alnum)</label>
+        <input id="value" class="form-control" type="text" 
+          pattern="^([a-zA-Z0-9]{0,})$">
+      </div>
+    </div>
+    <p>Issue HTTP Request: 
+      <button id="get-button" type="submit" 
+        class="btn btn-primary">GET</button>
+      <button id="post-button" type="submit" 
+        class="btn btn-success">POST</button>
+      <button id="put-button" type="submit" 
+        class="btn btn-warning">PUT</button>
+      <button id="delete-button" type="submit" 
+        class="btn btn-danger">DELETE</button>
+    </p>
+
+    <h2 class="h4" style="padding-top:20px">Detail of request and response</h2>
+    <p>Request URL: <span id="request-url">/api/v1/keys/</span></p>
+    <p>Request Body: <span id="request-body"></span></p>
+    <p>Response Code: <span id="response-code"></span></p>
+    <p>Response Body: <span id="response-body"></span></p>
+
+    <h2 class="h4" style="padding-top:20px">Current key and values</h2>
+    <table id="table" class="table">
+      <!-- Table body will be injected by jQuery -->
+    </table>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+version: '3.7'
+services:
+  selenium_chrome:
+    image: selenium/node-chrome:3.141.59-vanadium
+    container_name: dockerkvs_selenium_chrome
+    depends_on:
+      - selenium_hub
+    environment:
+      - HUB_HOST=selenium_hub
+      - HUB_PORT=4444
+  selenium_hub:
+    image: selenium/hub:3.141.59-vanadium
+    container_name: dockerkvs_selenium_hub
+    ports:
+      - 4444:4444
+  webtest:
+    build:
+      context: ./webtest
+      dockerfile: Dockerfile
+    image: dockerkvs_webtest  
+    container_name: dockerkvs_webtest
+    depends_on:
+      - web
+      - selenium_hub
+    tty: true
+    volumes:
+      - dockerkvs_selenium_volume:/images/
+    environment:
+      WEB_HOST: web
+      WEB_PORT: 80
+      SELENIUM_HUB_HOST: selenium_hub
+      SELENIUM_HUB_PORT: 4444
+  apptest:
+    build:
+      context: ./apptest
+      dockerfile: Dockerfile
+    image: dockerkvs_apptest
+    container_name: dockerkvs_apptest
+    depends_on:
+      - app
+    tty: true
+    environment:
+      APP_HOST: app
+      APP_PORT: 80
+      
+  web: 
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    image: dockerkvs_web
+    container_name: dockerkvs_web
+    restart: "no"
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    environment:
+      DEBUG: "false"
+      APP_SERVER: http://app:80
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: dockerkvs_app
+    container_name: dockerkvs_app
+    restart: "no"
+    depends_on:
+      - db
+    environment:
+      REDIS_HOST: db
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+  db:
+    image: redis:5.0.6-alpine3.10
+    restart: "no"
+    container_name: dockerkvs_db
+    volumes:
+      - dockerkvs_redis_volume:/data
+      
+volumes:
+  dockerkvs_redis_volume:
+    driver: local
+  dockerkvs_selenium_volume:
+    driver: local
